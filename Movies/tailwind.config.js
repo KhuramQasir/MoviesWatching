@@ -1,15 +1,19 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
+  darkMode: 'media',
   theme: {
     extend: {
       colors: {
         'gradient-blue': '#2203FF',
         'gradient-pink': '#C40D60',
+        backgroundDark: '#121212',
+        backgroundLight: '#ffffff',
       },
       fontFamily: {
         hand: ['"Just Another Hand"', 'cursive'],
         bebas: ['"Bebas Neue"', 'sans-serif'],
+        inter: ['Inter', 'sans-serif'],
       },
     },
   },

@@ -1,45 +1,68 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 
-const TrendingMovies = () => {
-  const movies = [
-    { title: 'Guardians of the Galaxy', year: '2023', runtime: '104m' },
-    { title: 'Shazam! Fury of the Gods', year: '2023', runtime: '104m' },
-    { title: 'Dungeons & Dragons', year: '2023', runtime: '104m' },
-    { title: 'Medellin', year: '2023', runtime: '104m' },
-    { title: 'John Wick: Chapter 4', year: '2023', runtime: '104m' },
-    { title: 'Spider-Man: Across the Spider-Verse', year: '2023', runtime: '104m' },
-    { title: 'Tyler Perry\'s Sistas', year: '2023', runtime: '104m' },
-    { title: 'The Cube', year: '2023', runtime: '104m' },
-    { title: 'Nancy Drew', year: '2023', runtime: '104m' },
-    { title: 'Rich in Love 2', year: '2023', runtime: '104m' },
-    { title: 'The Black Demon', year: '2023', runtime: '104m' },
-    { title: 'The Prank Panel', year: '2023', runtime: '104m' },
-  ];
+function TrendingMovies() {
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const response = await fetch(
+          "https://www.omdbapi.com/?s=Batman&apikey=3607774a&page=1"
+        );
+        const data = await response.json();
+        if (data.Response === "True") {
+          setMovies(data.Search);
+        } else {
+          throw new Error(data.Error);
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMovies();
+  }, []);
 
   return (
-    <div className="p-8">
-      <h2 className="text-2xl font-bold mb-4">Trending</h2>
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-        {movies.map((movie, index) => (
-          <div
-            key={index}
-            className="bg-gray-800 text-white rounded-lg shadow-md overflow-hidden"
-          >
-            <div className="h-40 bg-gray-600 flex items-center justify-center">
-              {/* Placeholder for Movie Poster */}
-              <span className="text-lg font-semibold">Poster</span>
-            </div>
-            <div className="p-4">
-              <h3 className="text-lg font-semibold">{movie.title}</h3>
-              <p className="text-sm text-gray-400">
-                {movie.year} • {movie.runtime}
-              </p>
-            </div>
-          </div>
-        ))}
+    <div className="w-[95%] mx-auto p-5">
+      <div className="flex items-center gap-2 mb-8">
+        <img src="src\images\fire.png" alt="" />
+        <h1 className="text-2xl font-bold">Trending</h1>
+        <img src="src/images/Vector 2.png" alt="" className="h-[2px] w-[82%]" />
+        <a href="#" className="text-blue-500 underline">
+          SeeMore
+        </a>
       </div>
+
+      {loading && <p className="text-center">Loading...</p>}
+      {error && <p className="text-red-500 text-center">{error}</p>}
+
+      {!loading && !error && (
+        <div className="grid grid-cols-5 gap-5">
+          {movies.map((movie) => (
+            <div
+              key={movie.imdbID}
+              className=" rounded-lg p-4 text-center w-48"
+            >
+              <img
+                src={movie.Poster}
+                alt={movie.Title}
+                className="w-full rounded-lg"
+              />
+              <h3 className="text-lg font-medium my-2 truncate whitespace-nowrap overflow-hidden">
+                {movie.Title}
+              </h3>
+
+              <p className="text-gray-500">{movie.Year}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
-};
+}
 
 export default TrendingMovies;
